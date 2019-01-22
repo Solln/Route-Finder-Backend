@@ -3,13 +3,14 @@ package hello;
 public class Marker {
 
     private long order;
-    private double lat, lng;
+    private double lat, lng, elevation;
 
 
-    public Marker(long id, double lat, double lng) {
+    public Marker(long id, double lat, double lng, double ele) {
         this.order = id;
         this.lat = lat;
         this.lng = lng;
+        this.elevation = ele;
     }
 
     public long getId() {
@@ -23,5 +24,10 @@ public class Marker {
     public double getlng() {
         return lng;
     }
+
+    public double getElevation() {
+        return elevation;
+    }
+
 
 }

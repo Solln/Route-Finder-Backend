@@ -3,6 +3,7 @@ package hello;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MappingHelper {
@@ -17,9 +18,10 @@ public class MappingHelper {
     }
 
 
-    public void createMarkerObjects() {
+    public String createMarkerObjects() {
 
         String[] splitCoords;
+        String newCoordsString = "";
 
         splitCoords = coords.split("\\/");
 
@@ -34,7 +36,11 @@ public class MappingHelper {
             double lat = Double.parseDouble(df.format(Double.parseDouble(indivEntries[0])));
             double lng = Double.parseDouble(df.format(Double.parseDouble(indivEntries[1])));
 
-            markers.add(new Marker(counter.getAndIncrement(), lat, lng));
+            double elevation = new HgtReader().getElevation(lat,lng);
+
+            markers.add(new Marker(counter.getAndIncrement(), lat, lng, elevation));
+
+            newCoordsString = newCoordsString + lat + "," + lng + "/";
         }
 
         System.out.println(coords);
@@ -43,7 +49,10 @@ public class MappingHelper {
             System.out.println("ID: " + mark.getId());
             System.out.println("Lat: " + mark.getlat());
             System.out.println("Lng: " + mark.getlng());
+            System.out.println("Elevation: " + mark.getElevation());
         }
+
+        return newCoordsString;
     }
 
 

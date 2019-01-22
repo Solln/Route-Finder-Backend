@@ -1,5 +1,7 @@
 package hello;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,7 +17,7 @@ public class MappingController {
 
     @RequestMapping("/greeting")
     public Marker greeting(@RequestParam(value="name", defaultValue="World") String name) {
-        return new Marker(counter.incrementAndGet(),0, 0);
+        return new Marker(counter.incrementAndGet(),0, 0, 0);
     }
 
     @CrossOrigin
@@ -24,16 +26,14 @@ public class MappingController {
         return "Test Return: " + name;
     }
 
-    // TEST MAPPING WHICH ADDS 0.01 TO COORDS AND RETURNS THEM
+    // Recieves coords, gets elevations and creates Marker objects (held inside the Mapping Helper for now)
     @CrossOrigin
     @RequestMapping("/requestMap")
     public String requestMap(@RequestParam(value="coords", defaultValue="") String coords) {
 
         MappingHelper helper = new MappingHelper(coords);
 
-        helper.createMarkerObjects();
-
-        return helper.testAddMethod();
+        return helper.createMarkerObjects();
     }
 
 
