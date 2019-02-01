@@ -1,4 +1,6 @@
-package hello;
+package main;
+
+import main.graph.MarkerNode;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -40,47 +42,20 @@ public class MappingHelper {
 
             markers.add(new Marker(counter.getAndIncrement(), lat, lng, elevation));
 
-            newCoordsString = newCoordsString + lat + "," + lng + "/";
+//            newCoordsString = newCoordsString + lat + "," + lng + "," + elevation + "/";
         }
 
-        System.out.println(coords);
+        //Run Algorithm 1
 
-        for (Marker mark : markers){
-            System.out.println("ID: " + mark.getId());
-            System.out.println("Lat: " + mark.getlat());
-            System.out.println("Lng: " + mark.getlng());
-            System.out.println("Elevation: " + mark.getElevation());
+        MidPointAlgo algo1 = new MidPointAlgo();
+
+        List<MarkerNode> newMarkers = algo1.MidPointAlgo(markers);
+
+        for (MarkerNode node : newMarkers){
+            newCoordsString = newCoordsString + node.lat + "," + node.lng + "," + node.elevation + "/";
         }
 
         return newCoordsString;
-    }
-
-
-    public String testAddMethod() {
-
-        String[] splitCoords;
-        String newCoordsString = "";
-
-        splitCoords = coords.split("\\/");
-
-        df.setRoundingMode(RoundingMode.CEILING);
-
-        for (String latlng : splitCoords) {
-            String[] indivEntries;
-            indivEntries = latlng.split("\\,");
-
-            double lat = Double.parseDouble(df.format(Double.parseDouble(indivEntries[0]) + 0.001));
-            double lng = Double.parseDouble(df.format(Double.parseDouble(indivEntries[1]) + 0.001));
-
-            newCoordsString = newCoordsString + lat + "," + lng + "/";
-
-        }
-
-//        System.out.println(coords);
-//        System.out.println(newCoordsString);
-
-        return newCoordsString;
-
     }
 
 
