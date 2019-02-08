@@ -2,7 +2,6 @@ package main;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
@@ -21,7 +20,7 @@ import java.util.HashMap;
 public class HgtReader {
     private static final int SECONDS_PER_MINUTE = 60;
 
-    public static final String HGT_EXT = ".hgt";
+    private static final String HGT_EXT = ".hgt";
 
     // alter these values for different SRTM resolutions
     private static final int HGT_RES = 3; // resolution in arc seconds
@@ -30,16 +29,16 @@ public class HgtReader {
     private static final int HGT_VOID = -32768; // magic number which indicates
     // 'void data' in HGT file
 
-    private static final HashMap<String, ShortBuffer> cache = new HashMap<String, ShortBuffer>();
+    private static final HashMap<String, ShortBuffer> cache = new HashMap<>();
 
     public double getElevation(double lat, double lng) {
         File file = new File("/Users/Solln/Desktop/Route-Finder-Backend/src/main/resources/O30/" + getHgtFileName(lat, lng));
-        System.out.println(file.getAbsolutePath());
+//        System.out.println(file.getAbsolutePath());
         return getElevationFromHgt(lat, lng, file);
     }
 
 
-    public static double getElevationFromHgt(double lat, double lon, File f) {
+    private static double getElevationFromHgt(double lat, double lon, File f) {
         try {
             String file = f.getName();
             // given area in cache?
@@ -56,8 +55,6 @@ public class HgtReader {
             }
 
             return readElevation(lat, lon, file);
-        } catch (FileNotFoundException e) {
-            return 0;
         } catch (Exception ioe) {
             return 0;
         }
@@ -66,12 +63,10 @@ public class HgtReader {
     @SuppressWarnings("resource")
     private static ShortBuffer readHgtFile(String file) throws Exception {
 
-        FileChannel fc = null;
-        ShortBuffer sb = null;
-        try {
+        ShortBuffer sb;
+        try (FileChannel fc = new FileInputStream(file).getChannel()) {
             // Eclipse complains here about resource leak on 'fc' - even with
             // 'finally' clause???
-            fc = new FileInputStream(file).getChannel();
             // choose the right endianness
 
             ByteBuffer bb = ByteBuffer.allocateDirect((int) fc.size());
@@ -81,16 +76,13 @@ public class HgtReader {
             bb.flip();
             // sb = bb.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
             sb = bb.order(ByteOrder.BIG_ENDIAN).asShortBuffer();
-        } finally {
-            if (fc != null)
-                fc.close();
         }
 
         return sb;
     }
 
 
-    public static double readElevation(double lat, double lon, String tag) {
+    private static double readElevation(double lat, double lon, String tag) {
 
         ShortBuffer sb = cache.get(tag);
 
@@ -129,7 +121,7 @@ public class HgtReader {
         }
     }
 
-    public static String getHgtFileName(double lati, double lngi) {
+    private static String getHgtFileName(double lati, double lngi) {
      int lat = (int) lati;
      int lon = (int) lngi;
 
@@ -147,7 +139,7 @@ public class HgtReader {
      HGT_EXT);
      }
 
-    public static double frac(double d) {
+    private static double frac(double d) {
         long iPart;
         double fPart;
 

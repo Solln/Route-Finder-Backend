@@ -6,14 +6,13 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class MappingHelper {
 
     private String coords;
-    private ArrayList<Marker> markers = new ArrayList<>();
+    private ArrayList<MarkerNode> markers = new ArrayList<>();
 
-    DecimalFormat df = new DecimalFormat("#.####");
+    private DecimalFormat df = new DecimalFormat("#.####");
 
     public MappingHelper(String coords) {
         this.coords = coords;
@@ -22,14 +21,36 @@ public class MappingHelper {
 
     public String createMarkerObjects() {
 
+        // Extracts from String into MarkerNode Objects (markers)
+        extractMarkers();
+
+        //Run Algorithm 1
+        MidPointAlgo algo1 = new MidPointAlgo();
+        //List<MarkerNode> newMarkers = algo1.runMidPointAlgo(markers);
+
+        //Run Algorithm 2
+        TreeAlgo algo2 = new TreeAlgo();
+        List<MarkerNode> newMarkers = algo2.runTreeAlgoAlgo(markers);
+
+        return convertToMarkerString(newMarkers);
+    }
+
+    private String convertToMarkerString(List<MarkerNode> newMarkers) {
+        StringBuilder newCoordsString = new StringBuilder();
+
+        for (MarkerNode node : newMarkers){
+            newCoordsString.append(node.getLat()).append(",").append(node.getLng()).append(",").append(node.getElevation()).append("/");
+        }
+
+        return newCoordsString.toString();
+    }
+
+    private void extractMarkers() {
         String[] splitCoords;
-        String newCoordsString = "";
 
         splitCoords = coords.split("\\/");
 
         df.setRoundingMode(RoundingMode.CEILING);
-
-        AtomicLong counter = new AtomicLong();
 
         for (String latlng : splitCoords) {
             String[] indivEntries;
@@ -40,22 +61,8 @@ public class MappingHelper {
 
             double elevation = new HgtReader().getElevation(lat,lng);
 
-            markers.add(new Marker(counter.getAndIncrement(), lat, lng, elevation));
-
-//            newCoordsString = newCoordsString + lat + "," + lng + "," + elevation + "/";
+            markers.add(new MarkerNode(lat, lng, elevation));
         }
-
-        //Run Algorithm 1
-
-        MidPointAlgo algo1 = new MidPointAlgo();
-
-        List<MarkerNode> newMarkers = algo1.MidPointAlgo(markers);
-
-        for (MarkerNode node : newMarkers){
-            newCoordsString = newCoordsString + node.lat + "," + node.lng + "," + node.elevation + "/";
-        }
-
-        return newCoordsString;
     }
 
 

@@ -1,58 +1,52 @@
 package main;
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
-public class converterWorkshop {
+public class ConverterWorkshop {
 
-    static DecimalFormat df = new DecimalFormat("#.####");
+    private DecimalFormat df = new DecimalFormat("#.####");
 
-    public static void main(String[] args) {
+//        double lat1 = 56.8;
+//        double lon1 = -3.6;
+//        double lat2 = 57;
+//        double lon2 = -3.3;
+//
+//        df.setRoundingMode(RoundingMode.CEILING);
+//
+//        getDistance(lat1, lon1, lat2, lon2);
+//
+//        System.out.println("Original Coords: (" + lat1 + ", " + lon1 + "), (" + lat2 + ", " + lon2 + ")");
+//
+//        double bearing = getBearing(lat1, lon1, lat2, lon2);
+//
+//        System.out.println("Original Bearing is: " + convertSingleDMS(bearing));
+//
+//        double[] newBearings = getNewBearings(bearing);
+//
+//        double[] midpoint = getMidPoint(lat1, lon1, lat2, lon2);
+//
+//        System.out.println("Midpoint is: " + midpoint[0] + ", " + midpoint[1]);
+//
+//        convertToDMS(midpoint[0], midpoint[1]);
+//
+//        System.out.println("---------BACK----------");
+//        System.out.println("Bearing going Back: " + convertSingleDMS(newBearings[0]));
+//        double[] pointA = newPoint(midpoint[0], midpoint[1], newBearings[0] , 1000);
+//        System.out.println("Moving back for 1000m");
+//        System.out.println(pointA[0] + ", " + pointA[1]);
+//
+//        System.out.println("---------FORWARD----------");
+//        System.out.println("Bearing going Forward: " + convertSingleDMS(newBearings[1]));
+//        double[] pointB = newPoint(midpoint[0], midpoint[1], newBearings[1] , 1000);
+//        System.out.println("Moving Forward for 1000m");
+//        System.out.println(pointB[0] + ", " + pointB[1]);
 
-        double lat1 = 56.8;
-        double lon1 = -3.6;
-        double lat2 = 57;
-        double lon2 = -3.3;
-
-        df.setRoundingMode(RoundingMode.CEILING);
-
-        getDistance(lat1, lon1, lat2, lon2);
-
-        System.out.println("Original Coords: (" + lat1 + ", " + lon1 + "), (" + lat2 + ", " + lon2 + ")");
-
-        double bearing = getBearing(lat1, lon1, lat2, lon2);
-
-        System.out.println("Original Bearing is: " + convertSingleDMS(bearing));
-
-        double[] newBearings = getNewBearings(bearing);
-
-        double[] midpoint = getMidPoint(lat1, lon1, lat2, lon2);
-
-        System.out.println("Midpoint is: " + midpoint[0] + ", " + midpoint[1]);
-
-        convertToDMS(midpoint[0], midpoint[1]);
-
-        System.out.println("---------BACK----------");
-        System.out.println("Bearing going Back: " + convertSingleDMS(newBearings[0]));
-        double[] pointA = newPoint(midpoint[0], midpoint[1], newBearings[0] , 1000);
-        System.out.println("Moving back for 1000m");
-        System.out.println(pointA[0] + ", " + pointA[1]);
-
-        System.out.println("---------FORWARD----------");
-        System.out.println("Bearing going Forward: " + convertSingleDMS(newBearings[1]));
-        double[] pointB = newPoint(midpoint[0], midpoint[1], newBearings[1] , 1000);
-        System.out.println("Moving Forward for 1000m");
-        System.out.println(pointB[0] + ", " + pointB[1]);
-
-
-
-    }
 
     //All Coordinates and Distances return to 4 decimal places
 
     // Returns new bearings +/- 90 Degrees from bearing
     // Returns Array [0] - Back / [1] - Forward. In Decimal format
-    private static double[] getNewBearings(double bearing) {
+    public double[] getNewBearings(double bearing) {
 
         double newBearings[] = new double[2];
 
@@ -75,7 +69,7 @@ public class converterWorkshop {
 
     // Converts a Lat/Lon to DMS
     // Returns String of conversions in DMS format
-    private static String convertToDMS(double lat, double lon) {
+    public String convertToDMS(double lat, double lon) {
 
         boolean N = true;
         boolean E = true;
@@ -93,18 +87,18 @@ public class converterWorkshop {
         StringBuilder result = new StringBuilder();
 
         // LAT
-        if (N == true) {
-            result.append(convertSingleDMS(lat) + " " + "N");
+        if (N) {
+            result.append(convertSingleDMS(lat)).append(" ").append("N");
         } else {
-            result.append(convertSingleDMS(lat) + " " + "S");
+            result.append(convertSingleDMS(lat)).append(" ").append("S");
         }
 
 
         // LON
-        if (E == true) {
-            result.append(convertSingleDMS(lon) + " " + "E");
+        if (E) {
+            result.append(convertSingleDMS(lon)).append(" ").append("E");
         } else {
-            result.append(convertSingleDMS(lon) + " " + "W");
+            result.append(convertSingleDMS(lon)).append(" ").append("W");
         }
 
         return result.toString();
@@ -113,7 +107,7 @@ public class converterWorkshop {
 
     // Converts a single value to DMS
     // Returns String of conversion in DMS format
-    private static String convertSingleDMS(double value) {
+    public String convertSingleDMS(double value) {
         int d = (int) value;
         double t1 = (value - d) * 60;
         int m = (int) t1;
@@ -124,7 +118,7 @@ public class converterWorkshop {
 
     // Gets the distance between 2 Lat/Lon points
     // Returns distance, units in Meters. In Decimal format
-    private static double getDistance(double lat1, double lon1, double lat2, double lon2) {
+    public double getDistance(double lat1, double lon1, double lat2, double lon2) {
 
         double radius = 6371e3;
 
@@ -148,7 +142,7 @@ public class converterWorkshop {
 
     // Gets Bearing between 2 Lat/Lon points
     // Returns Bearing in Decimal format
-    private static double getBearing(double lat1, double lon1, double lat2, double lon2) {
+    public double getBearing(double lat1, double lon1, double lat2, double lon2) {
 
         double lat1Rad = Math.toRadians(lat1);
         double lat2Rad = Math.toRadians(lat2);
@@ -158,15 +152,13 @@ public class converterWorkshop {
         double y = Math.sin(lon2Rad - lon1Rad) * Math.cos(lat2Rad);
         double x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(lon2Rad - lon1Rad);
 
-        double brng = Math.toDegrees(Math.atan2(y, x));
-
-        return brng;
+        return Math.toDegrees(Math.atan2(y, x));
 
     }
 
     // Gets the midpoint between 2 Lat/Lon points
     // Returns double[] where [0] = new Lat and [1] = new Lon . In Decimal format
-    private static double[] getMidPoint(double lat1, double lon1, double lat2, double lon2) {
+    public double[] getMidPoint(double lat1, double lon1, double lat2, double lon2) {
 
         double lat1Rad = Math.toRadians(lat1);
         double lat2Rad = Math.toRadians(lat2);
@@ -199,7 +191,7 @@ public class converterWorkshop {
 
     // Gets the new point based off a starting point / bearing / distance (in Meters)
     // Returns double[] where [0] = new Lat and [1] = new Lon . In Decimal format
-    private static double[] newPoint(double lat1, double lon1, double bearing, double d) {
+    public double[] newPoint(double lat1, double lon1, double bearing, double d) {
 
         double lat1Rad = Math.toRadians(lat1);
         double lon1Rad = Math.toRadians(lon1);

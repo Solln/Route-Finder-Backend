@@ -1,9 +1,7 @@
 package main.Controllers;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import main.MappingHelper;
-import main.Marker;
+import main.graph.MarkerNode;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,12 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MappingController {
 
-    private static final String template = "Hello, %s!";
-    private final AtomicLong counter = new AtomicLong();
-
     @RequestMapping("/greeting")
-    public Marker greeting(@RequestParam(value="name", defaultValue="World") String name) {
-        return new Marker(counter.incrementAndGet(),0, 0, 0);
+    public MarkerNode greeting(@RequestParam(value="name", defaultValue="World") String name) {
+        return new MarkerNode(0, 0, 0);
     }
 
     @CrossOrigin
