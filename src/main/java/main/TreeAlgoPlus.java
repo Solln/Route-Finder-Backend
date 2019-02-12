@@ -3,9 +3,11 @@ package main;
 import main.graph.MarkerNode;
 import main.graph.Route;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
-public class TreeAlgo {
+public class TreeAlgoPlus {
 
     private ConverterWorkshop converter = new ConverterWorkshop();
     private HgtReader hgt = new HgtReader();
@@ -13,8 +15,10 @@ public class TreeAlgo {
     private MarkerNode START, END;
 
     private double baseBearing;
-    private double[] newBearings;
-    private double distance;
+
+    // Num of Markers between Start and End
+    private int numOfMidPoints = 10;
+    private double edgeDist = 0;
 
     private ArrayList<Route> finalRoutes = new ArrayList<>();
 
@@ -26,15 +30,9 @@ public class TreeAlgo {
         END = markers.get(1);
 
         baseBearing = converter.getBearing(START.getLat(), START.getLng(), END.getLat(), END.getLng());
-        newBearings = converter.getNewBearings(baseBearing);
 
-        double edgeDist = converter.getDistance(START.getLat(), START.getLng(), END.getLat(), END.getLng());
+        edgeDist = converter.getDistance(START.getLat(), START.getLng(), END.getLat(), END.getLng());
 
-        // Num of Markers between Start and End
-        int numOfSplits = 10;
-
-        // Dynamic Number here please   EG 5 edges / 6 total markers / 4 inner markers
-        distance = edgeDist / (numOfSplits + 1);
 
         // Midpoint out at normal bearing for X distance
         // Use this point with perp bearing for X distance for side points
@@ -44,11 +42,10 @@ public class TreeAlgo {
         //if last section then link straight to end point
 
         System.out.println("Total Distance is: " + edgeDist);
-        System.out.println("Splitting into : " + (numOfSplits + 1) + " Sections");
-        System.out.println("Total of : " + (numOfSplits + 2) + " Markers");
-        System.out.println("Distance of each split: " + distance);
+        System.out.println("Splitting into : " + (numOfMidPoints) + " Sections");
+        System.out.println("Total of : " + (numOfMidPoints + 1) + " Markers");
 
-        MarkerNode completedTree = addChildren(START, numOfSplits, 0);
+        MarkerNode completedTree = addChildren(START, numOfMidPoints, 0, edgeDist);
 
         printPaths(completedTree);
 
@@ -59,13 +56,14 @@ public class TreeAlgo {
         System.out.println("Selected Time for Route: " + selected.getRouteTime() + " Minutes");
 
         // Testing
+
+//        testPrintElevations();
         int counter = 0;
         boolean isMin = true;
-        for (Route testRoute : finalRoutes){
-            if (testRoute.getRouteTime() == selected.getRouteTime()){
+        for (Route testRoute : finalRoutes) {
+            if (testRoute.getRouteTime() == selected.getRouteTime()) {
                 counter++;
-            }
-            else if (testRoute.getRouteTime() < selected.getRouteTime()){
+            } else if (testRoute.getRouteTime() < selected.getRouteTime()) {
                 isMin = false;
             }
         }
@@ -95,7 +93,7 @@ public class TreeAlgo {
         if (node.getChildren().size() == 1)
             printArray(path, pathLen);
         else {
-            /* otherwise try both subtrees */
+            /* otherwise try both subtrees  */
             printPathsRecur(node.getChildren().get(0), path, pathLen);
             printPathsRecur(node.getChildren().get(1), path, pathLen);
             printPathsRecur(node.getChildren().get(2), path, pathLen);
@@ -111,30 +109,37 @@ public class TreeAlgo {
         finalRoutes.add(newRoute);
     }
 
-    private MarkerNode addChildren(MarkerNode currentNode, int limit, int counter) {
+    private MarkerNode addChildren(MarkerNode currentNode, int limit, int counter, double dist) {
 
         ArrayList<MarkerNode> children = new ArrayList<>();
 
         MarkerNode nodeToReturn = currentNode;
         ArrayList<MarkerNode> newChildren = new ArrayList<>();
 
+        int newDiv = limit - counter;
+        double spllitDist = dist/newDiv;
+
         if (limit == counter) {
             newChildren.add(END);
         } else {
             // MID
-            double[] mid = converter.newPoint(currentNode.getLat(), currentNode.getLng(), baseBearing, distance);
+            double midBearing = converter.getBearing(currentNode.getLat(), currentNode.getLng(), END.getLat(), END.getLng());
+            double[] newMidBearings = converter.getNewBearings(midBearing);
+
+            double[] mid = converter.newPoint(currentNode.getLat(), currentNode.getLng(), midBearing, spllitDist);
+
             MarkerNode midNode = new MarkerNode(mid[0], mid[1], hgt.getElevation(mid[0], mid[1]));
             midNode.setParent(currentNode);
             children.add(midNode);
 
             //LEFT
-            double[] left = converter.newPoint(mid[0], mid[1], newBearings[0], distance / 1);
+            double[] left = converter.newPoint(mid[0], mid[1], newMidBearings[0], spllitDist);
             MarkerNode leftNode = new MarkerNode(left[0], left[1], hgt.getElevation(left[0], left[1]));
             leftNode.setParent(currentNode);
             children.add(leftNode);
 
             //RIGHT
-            double[] right = converter.newPoint(mid[0], mid[1], newBearings[1], distance / 1);
+            double[] right = converter.newPoint(mid[0], mid[1], newMidBearings[1], spllitDist);
             MarkerNode rightNode = new MarkerNode(right[0], right[1], hgt.getElevation(right[0], right[1]));
             rightNode.setParent(currentNode);
             children.add(rightNode);
@@ -146,7 +151,7 @@ public class TreeAlgo {
 
         for (MarkerNode node : currentNode.getChildren()) {
             if (counter <= limit) {
-                newChildren.add(addChildren(node, limit, counter));
+                newChildren.add(addChildren(node, limit, counter, (dist-spllitDist)));
             }
         }
         nodeToReturn.setChildren(newChildren);

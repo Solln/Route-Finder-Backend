@@ -10,6 +10,8 @@ public class Route {
 
     private double elevationChange = 0;
 
+    private double routeTime = 0;
+
     public void addEdge(MarkerNode adjNode1, MarkerNode adjNode2) {
         RouteEdge e = new RouteEdge(adjNode1, adjNode2);
         edges.add(e);
@@ -41,5 +43,13 @@ public class Route {
 
     public void setElevationChange(double elevationChange) {
         this.elevationChange = elevationChange;
+    }
+
+    public double getRouteTime() {
+        return routeTime;
+    }
+
+    public void setRouteTime(double routeTime) {
+        this.routeTime = routeTime;
     }
 }

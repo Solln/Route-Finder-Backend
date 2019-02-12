@@ -30,7 +30,11 @@ public class MappingHelper {
 
         //Run Algorithm 2
         TreeAlgo algo2 = new TreeAlgo();
-        List<MarkerNode> newMarkers = algo2.runTreeAlgoAlgo(markers);
+//        List<MarkerNode> newMarkers = algo2.runTreeAlgoAlgo(markers);
+
+        //Run Algorithm 3
+        TreeAlgoPlus algo3 = new TreeAlgoPlus();
+        List<MarkerNode> newMarkers = algo3.runTreeAlgoAlgo(markers);
 
         return convertToMarkerString(newMarkers);
     }
