@@ -1,12 +1,19 @@
-package main.graph;
+package main.GraphElements;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MarkerNode {
 
     private double lat, lng, elevation;
 
     private MarkerNode parent;
+
+    private double distance = Integer.MAX_VALUE;
+
+    private LinkedList<MarkerNode> shortestPath = new LinkedList<>();
+
 
     // MID, LEFT, RIGHT
     private ArrayList<MarkerNode> children = null;
@@ -55,5 +62,21 @@ public class MarkerNode {
 
     public void setParent(MarkerNode parent) {
         this.parent = parent;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public LinkedList<MarkerNode> getShortestPath() {
+        return shortestPath;
+    }
+
+    public void setShortestPath(LinkedList<MarkerNode> shortestPath) {
+        this.shortestPath = shortestPath;
     }
 }

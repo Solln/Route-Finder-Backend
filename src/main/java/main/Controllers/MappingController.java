@@ -1,7 +1,6 @@
 package main.Controllers;
 
-import main.MappingHelper;
-import main.graph.MarkerNode;
+import main.GraphElements.MarkerNode;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

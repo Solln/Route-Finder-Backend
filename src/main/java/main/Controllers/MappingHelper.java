@@ -1,6 +1,8 @@
-package main;
+package main.Controllers;
 
-import main.graph.MarkerNode;
+import main.Algorithms.*;
+import main.GraphElements.MarkerNode;
+import main.HgtReader;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -26,15 +28,23 @@ public class MappingHelper {
 
         //Run Algorithm 1
         MidPointAlgo algo1 = new MidPointAlgo();
-        //List<MarkerNode> newMarkers = algo1.runMidPointAlgo(markers);
+//        List<MarkerNode> newMarkers = algo1.runMidPointAlgo(markers);
 
         //Run Algorithm 2
         TreeAlgo algo2 = new TreeAlgo();
-//        List<MarkerNode> newMarkers = algo2.runTreeAlgoAlgo(markers);
+//        List<MarkerNode> newMarkers = algo2.runTreeAlgo(markers);
 
         //Run Algorithm 3
         TreeAlgoPlus algo3 = new TreeAlgoPlus();
-        List<MarkerNode> newMarkers = algo3.runTreeAlgoAlgo(markers);
+//        List<MarkerNode> newMarkers = algo3.runTreeAlgo(markers);
+
+        //Run Algorithm 4
+        multiRunTree algo4 = new multiRunTree();
+//        List<MarkerNode> newMarkers = algo4.runMultiAlgo(markers);
+
+        //Run Algorithm 5
+        meshAlgo algo5 = new meshAlgo();
+        List<MarkerNode> newMarkers = algo5.runMultiAlgo(markers);
 
         return convertToMarkerString(newMarkers);
     }

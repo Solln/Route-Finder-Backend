@@ -1,7 +1,7 @@
 package main;
 
-import main.graph.MarkerNode;
-import main.graph.Route;
+import main.GraphElements.MarkerNode;
+import main.GraphElements.Route;
 
 import java.util.ArrayList;
 
@@ -44,9 +44,21 @@ public class NaismithConverter {
             ArrayList<MarkerNode> markers = route.getMarkers();
             for (int i = 0; i < markers.size(); i++) {
                 if (markers.get(i).getChildren() != null) {
-                    double eleA = markers.get(i).getElevation();
-                    double eleB = markers.get(i + 1).getElevation();
-                    double eleChange = eleB - eleA;
+
+                    double eleA;
+                    double eleB;
+                    double eleChange = 0;
+
+                    if (markers.size() == 9) {
+                        System.out.println();
+                    }
+                    try {
+                        eleA = markers.get(i).getElevation();
+                        eleB = markers.get(i + 1).getElevation();
+                        eleChange = eleB - eleA;
+                    } catch (Exception e) {
+                        System.out.println();
+                    }
 
                     double dist = converter.getDistance(markers.get(i).getLat(), markers.get(i).getLng(),
                             markers.get(i + 1).getLat(), markers.get(i + 1).getLng());

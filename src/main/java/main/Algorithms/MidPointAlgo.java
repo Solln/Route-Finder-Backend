@@ -1,7 +1,8 @@
-package main;
+package main.Algorithms;
 
-import main.graph.MarkerNode;
-import main.graph.Route;
+import main.ConverterWorkshop;
+import main.GraphElements.MarkerNode;
+import main.GraphElements.Route;
 import main.MidPointSplit.Search;
 
 import java.util.ArrayList;
