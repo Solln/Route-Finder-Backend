@@ -6,6 +6,9 @@ import java.util.*;
 
 public class Dijkstra {
 
+    private NaismithConverter nai = new NaismithConverter();
+    private ConverterWorkshop converter = new ConverterWorkshop();
+
     public List<MarkerNode> calculateShortestPathFromSource(ArrayList<MarkerNode> graph, MarkerNode source) {
 
         source.setDistance(0);
@@ -19,7 +22,17 @@ public class Dijkstra {
             MarkerNode currentNode = getLowestDistanceNode(unsettledNodes);
             unsettledNodes.remove(currentNode);
             for (MarkerNode child : currentNode.getChildren()) {
-                double edgeWeight = child.getElevation() - currentNode.getElevation();
+                // EdgeWeight is the factor
+
+                // -- Using Naismiths --
+                double distance = converter.getDistance(currentNode.getLat(), currentNode.getLng(), child.getLat(), child.getLng());
+                double heightDif = child.getElevation() - currentNode.getElevation();
+
+                double edgeWeight = nai.convertToTime(distance, heightDif);
+
+                // -- Using Purely avoiding uphill
+                // double edgeWeight = child.getElevation() - currentNode.getElevation();
+
                 if (!settledNodes.contains(child)) {
                     calculateMinimumDistance(child, edgeWeight, currentNode);
                     unsettledNodes.add(child);

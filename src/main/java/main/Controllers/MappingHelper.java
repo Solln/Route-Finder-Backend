@@ -3,6 +3,7 @@ package main.Controllers;
 import main.Algorithms.*;
 import main.GraphElements.MarkerNode;
 import main.HgtReader;
+import org.slf4j.Marker;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -26,33 +27,122 @@ public class MappingHelper {
         // Extracts from String into MarkerNode Objects (markers)
         extractMarkers();
 
-        //Run Algorithm 1
-        MidPointAlgo algo1 = new MidPointAlgo();
-//        List<MarkerNode> newMarkers = algo1.runMidPointAlgo(markers);
+        // Convert into sets of coords
+        ArrayList<ArrayList<MarkerNode>> sets = new ArrayList<>();
 
-        //Run Algorithm 2
-        TreeAlgo algo2 = new TreeAlgo();
-//        List<MarkerNode> newMarkers = algo2.runTreeAlgo(markers);
+        for (int i = 0; i < markers.size() - 1; i++) {
+            ArrayList<MarkerNode> set = new ArrayList<>();
+            set.add(markers.get(i));
+            set.add(markers.get(i + 1));
+            sets.add(set);
+        }
 
-        //Run Algorithm 3
-        TreeAlgoPlus algo3 = new TreeAlgoPlus();
-//        List<MarkerNode> newMarkers = algo3.runTreeAlgo(markers);
+        return runMeshAlgo(sets);
+    }
 
-        //Run Algorithm 4
-        multiRunTree algo4 = new multiRunTree();
-//        List<MarkerNode> newMarkers = algo4.runMultiAlgo(markers);
-
+    private String runMeshAlgo(ArrayList<ArrayList<MarkerNode>> sets) {
         //Run Algorithm 5
-        meshAlgo algo5 = new meshAlgo();
-        List<MarkerNode> newMarkers = algo5.runMultiAlgo(markers);
 
-        return convertToMarkerString(newMarkers);
+        ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
+
+        for (ArrayList<MarkerNode> set : sets) {
+
+            meshAlgo algo5A = new meshAlgo();
+            List<MarkerNode> newMarkers = algo5A.runMultiAlgo(set);
+
+            newSets.add((ArrayList<MarkerNode>) newMarkers);
+        }
+        return convertToMarkerString(newSets.get(newSets.size()-1));
+    }
+
+    private String runMidpointAlgo(ArrayList<ArrayList<MarkerNode>> sets) {
+        ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
+
+        for (ArrayList<MarkerNode> set : sets) {
+
+            //Run Algorithm 1
+            MidPointAlgo algo1 = new MidPointAlgo();
+            List<MarkerNode> newMarkers = algo1.runMidPointAlgo(set);
+
+            newSets.add((ArrayList<MarkerNode>) newMarkers);
+
+        }
+        return convertToMarkerString(combineSets(newSets));
+    }
+
+    private String runTreeAlgo(ArrayList<ArrayList<MarkerNode>> sets) {
+        ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
+
+        for (ArrayList<MarkerNode> set : sets) {
+
+            //Run Algorithm 1
+            TreeAlgo algo = new TreeAlgo();
+            List<MarkerNode> newMarkers = algo.runTreeAlgo(set);
+
+            newSets.add((ArrayList<MarkerNode>) newMarkers);
+
+        }
+        return convertToMarkerString(combineSets(newSets));
+
+    }
+
+    private String runTreePlusAlgo(ArrayList<ArrayList<MarkerNode>> sets) {
+        ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
+
+        for (ArrayList<MarkerNode> set : sets) {
+
+            //Run Algorithm 1
+            TreeAlgoPlus algo = new TreeAlgoPlus();
+            List<MarkerNode> newMarkers = algo.runTreeAlgo(set);
+
+            newSets.add((ArrayList<MarkerNode>) newMarkers);
+
+        }
+        return convertToMarkerString(combineSets(newSets));
+    }
+
+    private String runMultiRunTree(ArrayList<ArrayList<MarkerNode>> sets) {
+        ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
+
+        for (ArrayList<MarkerNode> set : sets) {
+
+            //Run Algorithm 1
+            multiRunTree algo = new multiRunTree();
+            List<MarkerNode> newMarkers = algo.runMultiAlgo(set);
+
+            newSets.add((ArrayList<MarkerNode>) newMarkers);
+
+        }
+        return convertToMarkerString(combineSets(newSets));
+    }
+
+    private ArrayList<MarkerNode> combineSets(ArrayList<ArrayList<MarkerNode>> sets) {
+
+        ArrayList<MarkerNode> finalMarkerList = new ArrayList<>();
+
+        if (sets.size() > 1) {
+
+            for (int i = 0; i < sets.size(); i++) {
+
+                if (i == 0) {
+                    finalMarkerList.addAll(sets.get(i));
+                } else {
+                    sets.get(i).remove(0);
+                    finalMarkerList.addAll(sets.get(i));
+                }
+            }
+        } else {
+            finalMarkerList.addAll(sets.get(0));
+        }
+
+        return finalMarkerList;
+
     }
 
     private String convertToMarkerString(List<MarkerNode> newMarkers) {
         StringBuilder newCoordsString = new StringBuilder();
 
-        for (MarkerNode node : newMarkers){
+        for (MarkerNode node : newMarkers) {
             newCoordsString.append(node.getLat()).append(",").append(node.getLng()).append(",").append(node.getElevation()).append("/");
         }
 
@@ -73,7 +163,7 @@ public class MappingHelper {
             double lat = Double.parseDouble(df.format(Double.parseDouble(indivEntries[0])));
             double lng = Double.parseDouble(df.format(Double.parseDouble(indivEntries[1])));
 
-            double elevation = new HgtReader().getElevation(lat,lng);
+            double elevation = new HgtReader().getElevation(lat, lng);
 
             markers.add(new MarkerNode(lat, lng, elevation));
         }

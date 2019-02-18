@@ -2,7 +2,6 @@ package main.GraphElements;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class MarkerNode {
 
@@ -13,7 +12,6 @@ public class MarkerNode {
     private double distance = Integer.MAX_VALUE;
 
     private LinkedList<MarkerNode> shortestPath = new LinkedList<>();
-
 
     // MID, LEFT, RIGHT
     private ArrayList<MarkerNode> children = null;
