@@ -5,13 +5,13 @@ import main.GraphElements.MarkerNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class multiRunTree {
+public class MultiRunTree implements Algorithm{
 
-    public List<MarkerNode> runMultiAlgo(ArrayList<MarkerNode> markers) {
+    public List<MarkerNode> runAlgo(ArrayList<MarkerNode> markers) {
 
         TreeAlgoPlus algo1 = new TreeAlgoPlus();
 
-        List<MarkerNode> newMarkers = algo1.runTreeAlgo(markers);
+        List<MarkerNode> newMarkers = algo1.runAlgo(markers);
 
         List<MarkerNode> finalMarkers = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class multiRunTree {
         List<List<MarkerNode>> testList = new ArrayList<>();
 
         for (List<MarkerNode> set : markerSets) {
-            List<MarkerNode> splitMarkers = new TreeAlgoPlus().runTreeAlgo(set);
+            List<MarkerNode> splitMarkers = new TreeAlgoPlus().runAlgo((ArrayList<MarkerNode>) set);
 
             testList.add(splitMarkers);
 
@@ -51,6 +51,10 @@ public class multiRunTree {
 
         return finalMarkers;
 
+    }
+
+    public double getTotalDistance() {
+        return 0;
     }
 
 }

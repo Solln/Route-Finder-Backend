@@ -1,7 +1,7 @@
 package main.GraphElements;
 
-import main.ConverterWorkshop;
-import main.HgtReader;
+import main.Helpers.ConverterWorkshop;
+import main.Helpers.HgtReader;
 
 import java.util.ArrayList;
 

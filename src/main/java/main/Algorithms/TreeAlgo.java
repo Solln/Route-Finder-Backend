@@ -1,14 +1,14 @@
 package main.Algorithms;
 
-import main.ConverterWorkshop;
-import main.HgtReader;
-import main.NaismithConverter;
+import main.Helpers.ConverterWorkshop;
+import main.Helpers.HgtReader;
+import main.Helpers.NaismithConverter;
 import main.GraphElements.MarkerNode;
 import main.GraphElements.Route;
 
 import java.util.*;
 
-public class TreeAlgo {
+public class TreeAlgo implements Algorithm{
 
     private ConverterWorkshop converter = new ConverterWorkshop();
     private HgtReader hgt = new HgtReader();
@@ -23,7 +23,7 @@ public class TreeAlgo {
 
     private NaismithConverter NConverter = new NaismithConverter();
 
-    public List<MarkerNode> runTreeAlgo(List<MarkerNode> markers) {
+    public List<MarkerNode> runAlgo(ArrayList<MarkerNode> markers) {
 
         START = markers.get(0);
         END = markers.get(1);
@@ -46,10 +46,10 @@ public class TreeAlgo {
 
         //if last section then link straight to end point
 
-        System.out.println("Total Distance is: " + edgeDist);
-        System.out.println("Splitting into : " + (numOfSplits + 1) + " Sections");
-        System.out.println("Total of : " + (numOfSplits + 2) + " Markers");
-        System.out.println("Distance of each split: " + distance);
+//        System.out.println("Total Distance is: " + edgeDist);
+//        System.out.println("Splitting into : " + (numOfSplits + 1) + " Sections");
+//        System.out.println("Total of : " + (numOfSplits + 2) + " Markers");
+//        System.out.println("Distance of each split: " + distance);
 
         MarkerNode completedTree = addChildren(START, numOfSplits, 0);
 
@@ -59,7 +59,7 @@ public class TreeAlgo {
 
         Route selected = finalRoutes.stream().min(Comparator.comparing(route -> route.getRouteTime())).get();
 
-        System.out.println("Selected Time for Route: " + selected.getRouteTime() + " Minutes");
+//        System.out.println("Selected Time for Route: " + selected.getRouteTime() + " Minutes");
 
         // Testing
         int counter = 0;
@@ -73,13 +73,12 @@ public class TreeAlgo {
             }
         }
 
-        System.out.println("Total number of routes: " + finalRoutes.size());
-        System.out.println("Number of routes with same time: " + counter);
-        System.out.println("Selected Route is the min time: " + isMin);
+//        System.out.println("Total number of routes: " + finalRoutes.size());
+//        System.out.println("Number of routes with same time: " + counter);
+//        System.out.println("Selected Route is the min time: " + isMin);
 
         return selected.getMarkers();
     }
-
 
     private void printPaths(MarkerNode node) {
         MarkerNode path[] = new MarkerNode[1000];
@@ -156,6 +155,10 @@ public class TreeAlgo {
 
         return nodeToReturn;
 
+    }
+
+    public double getTotalDistance() {
+        return 0;
     }
 
 }

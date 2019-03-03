@@ -1,15 +1,15 @@
 package main.Algorithms;
 
-import main.ConverterWorkshop;
+import main.Helpers.ConverterWorkshop;
 import main.GraphElements.MarkerNode;
 import main.GraphElements.Route;
-import main.MidPointSplit.Search;
+import main.Algorithms.MidPointAlgoGraphElements.Search;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class MidPointAlgo {
+public class MidPointAlgo implements Algorithm{
 
     private ArrayList<MarkerNode> markers = new ArrayList<>();
 
@@ -20,7 +20,7 @@ public class MidPointAlgo {
     // EVERY X.XX(X)X IS 130M
 
 
-    public List<MarkerNode> runMidPointAlgo(ArrayList<MarkerNode> markers) {
+    public List<MarkerNode> runAlgo(ArrayList<MarkerNode> markers) {
         this.markers = markers;
 
         Route route = plotMidPoints();
@@ -38,8 +38,8 @@ public class MidPointAlgo {
         double dist = distance(markers.get(0).getLat(), markers.get(0).getLng(),
                 markers.get(1).getLat(), markers.get(1).getLng());
         int markersThatCanBePlaced = (int) (dist * 10);
-        System.out.println(dist + " Kilometers\n");
-        System.out.println("Markers to be placed: " + markersThatCanBePlaced);
+//        System.out.println(dist + " Kilometers\n");
+//        System.out.println("Markers to be placed: " + markersThatCanBePlaced);
 
         int distance = Math.abs(numMarkers[0] - markersThatCanBePlaced);
         int idx = 0;
@@ -52,7 +52,7 @@ public class MidPointAlgo {
         }
         int markersToBePlaced = numMarkers[idx];
 
-        System.out.println("Closest Value is: " + markersToBePlaced);
+//        System.out.println("Closest Value is: " + markersToBePlaced);
 
         // =======================================================================
 
@@ -93,15 +93,14 @@ public class MidPointAlgo {
 
         Route selected = trimmedRoutes.stream().min(Comparator.comparing(route -> route.getElevationChange())).get();
 
-        System.out.println("Selected change is: " + selected.getElevationChange());
+//        System.out.println("Selected change is: " + selected.getElevationChange());
 
-        for (int i = 0; i < 200; i++){
-            System.out.println(trimmedRoutes.get(i).getElevationChange());
-        }
+//        for (int i = 0; i < 200; i++){
+//            System.out.println(trimmedRoutes.get(i).getElevationChange());
+//        }
 
         return selected;
     }
-
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
         double theta = lon1 - lon2;
@@ -123,5 +122,7 @@ public class MidPointAlgo {
         return (rad * 180.0 / Math.PI);
     }
 
-
+    public double getTotalDistance() {
+        return 0;
+    }
 }

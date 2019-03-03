@@ -1,44 +1,46 @@
 package main.Algorithms;
 
-import main.ConverterWorkshop;
-import main.Dijkstra;
 import main.GraphElements.MarkerNode;
-import main.HgtReader;
+import main.Helpers.ConverterWorkshop;
+import main.Helpers.Dijkstra;
+import main.Helpers.HgtReader;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 
-public class meshAlgo {
+public class MeshAlgo implements Algorithm{
 
-    private List<MarkerNode> markerBank = new ArrayList<>();
+    public List<MarkerNode> markerBank = new ArrayList<>();
     private ConverterWorkshop converter = new ConverterWorkshop();
     private HgtReader hgt = new HgtReader();
+
+    private DecimalFormat df = new DecimalFormat("#.####");
+
 
     private MarkerNode START;
     private MarkerNode END;
 
-    // 88.9km per 1    0.001 = 90m
+    // 88.9km per 1    0.001 = 70m - 110m   is the correct unit of measurement for the elevation data capped at 90m
     double resolution = 0.001;
 
+    private double minDistance = 0;
     private double totalDistance = 0;
+    private double splitDist = 0.01;
 
-    public List<MarkerNode> runMultiAlgo(ArrayList<MarkerNode> markers) {
+
+    public List<MarkerNode> runAlgo(ArrayList<MarkerNode> markers) {
 
         START = markers.get(0);
         END = markers.get(1);
 
-        totalDistance = converter.getDistance(START.getLat(), START.getLng(), END.getLat(), END.getLng());
-
-        double bearing = converter.getBearing(START.getLat(), START.getLng(), END.getLat(), END.getLng());
-
-        double[] newBearings = converter.getNewBearings(bearing);
+        minDistance = converter.getDistance(START.getLat(), START.getLng(), END.getLat(), END.getLng());
 
         // Create the mesh of points around START and END
-        List<List<MarkerNode>> rows = createMesh(newBearings);
+        List<List<MarkerNode>> rows = createMesh();
 
         // Add all the Neighbours to nodes
         addNeighbours(rows);
-
-        System.out.println("Removed links due to +/- 30 degrees: " + removalCount);
 
         // 2.5mil markers - 15 seconds
         // Used to detect Water hazards
@@ -48,26 +50,21 @@ public class meshAlgo {
         return runDijkstras();
     }
 
-    private List<List<MarkerNode>> createMesh(double[] newBearings) {
-        double[] returnedPoint;
+    private List<List<MarkerNode>> createMesh() {
         double[] x_array = new double[4];
         double[] y_array = new double[4];
 
-        returnedPoint = converter.newPoint(START.getLat(), START.getLng(), newBearings[0], totalDistance / 4);
-        x_array[0] = returnedPoint[1];
-        y_array[0] = returnedPoint[0];
+        x_array[0] = START.getLng() + splitDist;
+        y_array[0] = START.getLat() + splitDist;
 
-        returnedPoint = converter.newPoint(START.getLat(), START.getLng(), newBearings[1], totalDistance / 4);
-        x_array[1] = returnedPoint[1];
-        y_array[1] = returnedPoint[0];
+        x_array[1] = START.getLng() - splitDist;
+        y_array[1] = START.getLat() - splitDist;
 
-        returnedPoint = converter.newPoint(END.getLat(), END.getLng(), newBearings[1], totalDistance / 4);
-        x_array[2] = returnedPoint[1];
-        y_array[2] = returnedPoint[0];
+        x_array[2] = END.getLng() + splitDist;
+        y_array[2] = END.getLat() + splitDist;
 
-        returnedPoint = converter.newPoint(END.getLat(), END.getLng(), newBearings[0], totalDistance / 4);
-        x_array[3] = returnedPoint[1];
-        y_array[3] = returnedPoint[0];
+        x_array[3] = END.getLng() - splitDist;
+        y_array[3] = END.getLat() - splitDist;
 
         double minX = 100, maxX = -100, minY = 100, maxY = -100;
 
@@ -89,23 +86,17 @@ public class meshAlgo {
             }
         }
 
-//        Path2D.Double p = new Path2D.Double();
-//
-//        p.moveTo(minX, minY);
-//        p.lineTo(maxX, minY);
-//        p.lineTo(maxX, maxY);
-//        p.lineTo(minX, maxY);
-//        p.closePath();
-
-//        if (p.contains(x, y)) {
-
         List<List<MarkerNode>> rows = new ArrayList<>();
 
         for (double y = minY; y <= maxY; ) {
 
+            y = fourDecimal(y);
+
             ArrayList<MarkerNode> row = new ArrayList<>();
 
             for (double x = minX; x <= maxX; ) {
+
+                x = fourDecimal(x);
 
                 MarkerNode newMarker;
 
@@ -292,16 +283,11 @@ public class meshAlgo {
 
     private ArrayList<MarkerNode> runDijkstras() {
 
-//        System.out.println("DIJ START NODE = " + START.getLat() + ", " + START.getLng());
-//        System.out.println("DIJ END NODE = " + END.getLat() + ", " + END.getLng());
-
         Dijkstra dij = new Dijkstra();
 
         ArrayList<MarkerNode> dijMarkers = (ArrayList<MarkerNode>) dij.calculateShortestPathFromSource((ArrayList<MarkerNode>) markerBank, markerBank.get(markerBank.indexOf(START)));
 
         MarkerNode newEnd = dijMarkers.get(dijMarkers.indexOf(END));
-
-//        System.out.println("newEnd: " + newEnd.getLat() + ", " + newEnd.getLng());
 
         LinkedList<MarkerNode> routeList = newEnd.getShortestPath();
 
@@ -309,8 +295,26 @@ public class meshAlgo {
 
         convertedList.add(END);
 
-//        System.out.println("First Node: " + convertedList.get(0).getLat() + ", "+ convertedList.get(0).getLng() + "|| Last Node: " + convertedList.get(convertedList.size()-1).getLat() + ", "+ convertedList.get(convertedList.size()-1).getLng());
-//        System.out.println("------------------------------");
+        // TESTING -- Used to count the amount of total 0 Path routes
+//        int count = 0;
+//
+//        for (MarkerNode node : dijMarkers){
+//            if (node.getShortestPath().size() == 0){
+//                count++;
+//            }
+//        }
+
+        for (int i = 1; i < convertedList.size(); i++) {
+
+            double fLat = convertedList.get(i - 1).getLat();
+            double fLng = convertedList.get(i - 1).getLng();
+            double sLat = convertedList.get(i).getLat();
+            double sLng = convertedList.get(i).getLng();
+
+            double indivDist = converter.getDistance(fLat, fLng, sLat, sLng);
+
+            totalDistance = totalDistance + indivDist;
+        }
 
         return convertedList;
     }
@@ -344,19 +348,27 @@ public class meshAlgo {
             }
         }
 
+        // Remove links to "Lake" Areas
+        ArrayList<MarkerNode> nodesToRemove = new ArrayList<>();
+
         for (MarkerNode node : list) {
             for (Double val : onesToRemove) {
                 if (node.getElevation() == val) {
-                    node.setElevation(99999);
+                    nodesToRemove.add(node);
                 }
             }
         }
 
-        return list;
+        for (MarkerNode node : list){
+            for (MarkerNode removal : nodesToRemove) {
+                node.getChildren().remove(removal);
+            }
+        }
 
+        return list;
     }
 
-    int removalCount = 0;
+    private int slopeLimit = 30;
 
     private boolean checkGradient(MarkerNode start, MarkerNode end) {
 
@@ -364,16 +376,14 @@ public class meshAlgo {
 
         if (eleChange > 0) {
             double slope = Math.toDegrees(Math.atan(eleChange / 90));
-            if (slope > 30) {
-                removalCount++;
+            if (slope > slopeLimit) {
                 return false;
             } else {
                 return true;
             }
         } else if (eleChange < 0) {
             double slope = Math.toDegrees(Math.atan(eleChange / 90));
-            if (slope < -30) {
-                removalCount++;
+            if (slope < -slopeLimit) {
                 return false;
             } else {
                 return true;
@@ -381,8 +391,18 @@ public class meshAlgo {
         } else {
             return true;
         }
-
-
     }
 
+    public void setSlopeLimit(int slopeLimit) {
+        this.slopeLimit = slopeLimit;
+    }
+
+    public double getTotalDistance() {
+        return totalDistance;
+    }
+
+    private double fourDecimal(double value) {
+        df.setRoundingMode(RoundingMode.CEILING);
+        return Double.parseDouble(df.format(value));
+    }
 }

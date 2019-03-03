@@ -20,7 +20,7 @@ public class MappingController {
         return "Test Return: " + name;
     }
 
-    // Recieves coords, gets elevations and creates Marker objects (held inside the Mapping Helper for now)
+    // Receives coords, gets elevations and creates Marker objects (held inside the Mapping Helper for now)
     @CrossOrigin
     @RequestMapping("/requestMap")
     public String requestMap(@RequestParam(value="coords", defaultValue="") String coords) {

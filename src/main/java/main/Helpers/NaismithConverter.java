@@ -1,4 +1,4 @@
-package main;
+package main.Helpers;
 
 import main.GraphElements.MarkerNode;
 import main.GraphElements.Route;
@@ -43,36 +43,63 @@ public class NaismithConverter {
             double time = 0;
             ArrayList<MarkerNode> markers = route.getMarkers();
             for (int i = 0; i < markers.size(); i++) {
+
+
                 if (markers.get(i).getChildren() != null) {
 
                     double eleA;
                     double eleB;
                     double eleChange = 0;
 
-                    if (markers.size() == 9) {
-                        System.out.println();
-                    }
                     try {
                         eleA = markers.get(i).getElevation();
                         eleB = markers.get(i + 1).getElevation();
                         eleChange = eleB - eleA;
+
+
+                        double dist = converter.getDistance(markers.get(i).getLat(), markers.get(i).getLng(),
+                                markers.get(i + 1).getLat(), markers.get(i + 1).getLng());
+
+                        time = time + convertToTime(dist, eleChange);
+
                     } catch (Exception e) {
-                        System.out.println();
                     }
-
-                    double dist = converter.getDistance(markers.get(i).getLat(), markers.get(i).getLng(),
-                            markers.get(i + 1).getLat(), markers.get(i + 1).getLng());
-
-                    time = time + convertToTime(dist, eleChange);
 
                 } else {
                     route.setRouteTime(time);
                 }
             }
+
         }
 
         return finalRoutes;
 
     }
+
+    public double calcSingleRouteTime(ArrayList<MarkerNode> markers) {
+
+        double time = 0;
+
+        for (int i = 1; i < markers.size(); i++) {
+
+            double eleA = markers.get(i - 1).getElevation();
+
+            double eleB = markers.get(i).getElevation();
+            double eleChange = 0;
+
+            eleChange = eleA - eleB;
+
+
+            double dist = converter.getDistance(markers.get(i - 1).getLat(), markers.get(i - 1).getLng(),
+                    markers.get(i).getLat(), markers.get(i).getLng());
+
+            time = time + convertToTime(dist, eleChange);
+        }
+
+
+        return time;
+
+    }
+
 
 }
