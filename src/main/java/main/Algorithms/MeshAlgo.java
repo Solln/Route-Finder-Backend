@@ -22,7 +22,7 @@ public class MeshAlgo implements Algorithm{
     private MarkerNode END;
 
     // 88.9km per 1    0.001 = 70m - 110m   is the correct unit of measurement for the elevation data capped at 90m
-    double resolution = 0.001;
+    private double resolution = 0.001;
 
     private double minDistance = 0;
     private double totalDistance = 0;
@@ -404,5 +404,9 @@ public class MeshAlgo implements Algorithm{
     private double fourDecimal(double value) {
         df.setRoundingMode(RoundingMode.CEILING);
         return Double.parseDouble(df.format(value));
+    }
+
+    public int getSlopeLimit() {
+        return slopeLimit;
     }
 }

@@ -46,11 +46,6 @@ public class TreeAlgo implements Algorithm{
 
         //if last section then link straight to end point
 
-//        System.out.println("Total Distance is: " + edgeDist);
-//        System.out.println("Splitting into : " + (numOfSplits + 1) + " Sections");
-//        System.out.println("Total of : " + (numOfSplits + 2) + " Markers");
-//        System.out.println("Distance of each split: " + distance);
-
         MarkerNode completedTree = addChildren(START, numOfSplits, 0);
 
         printPaths(completedTree);

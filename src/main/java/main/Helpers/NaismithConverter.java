@@ -11,10 +11,15 @@ public class NaismithConverter {
 
     public double convertToTime(double distance, double height) {
 
+        // dist 5000  height 600
+
         double time = 0;
+
+        // Gets the time taken for the horizontal distance
         double horizonal = distance / 83.3333;
         double vertical = 0;
 
+        // Gets the time taken for the vertical distance depending on the height
         if (height >= 0) {
             vertical = height / 10;
             time = horizonal + vertical;
@@ -63,6 +68,7 @@ public class NaismithConverter {
                         time = time + convertToTime(dist, eleChange);
 
                     } catch (Exception e) {
+                        System.out.println("Something Odd Happened With The Route Time Calculation");
                     }
 
                 } else {

@@ -14,14 +14,14 @@ public class GraphStream {
 
     public static void main(String args[]) {
         Graph graph = new SingleGraph("Tutorial 1");
-        //Small
-//        String coords = "56.9691,-3.5528/56.9537,-3.5529/";
+//        Small
+        String coords = "56.9691,-3.5528/56.9537,-3.5529/";
 
         // Large
 //        String coords = "57.0178,-3.7038/57.0344,-3.7086/";
 
         //Lake
-        String coords = "57.0779,-3.8012/57.0779,-3.7789/";
+//        String coords = "57.0779,-3.8012/57.0779,-3.7789/";
 
         MappingHelper helper = new MappingHelper(coords);
         helper.extractMarkers(coords);

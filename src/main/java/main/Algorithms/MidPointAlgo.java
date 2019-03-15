@@ -27,6 +27,7 @@ public class MidPointAlgo implements Algorithm{
 
         ArrayList<MarkerNode> newMarkerList;
 
+
         newMarkerList = route.getMarkers();
 
         return newMarkerList;

@@ -1,6 +1,5 @@
 package main.Controllers;
 
-import main.GraphElements.MarkerNode;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class MappingController {
 
     @RequestMapping("/greeting")
-    public MarkerNode greeting(@RequestParam(value="name", defaultValue="World") String name) {
-        return new MarkerNode(0, 0, 0);
+    public String greeting() {
+        return "Hello, World!";
     }
 
     @CrossOrigin

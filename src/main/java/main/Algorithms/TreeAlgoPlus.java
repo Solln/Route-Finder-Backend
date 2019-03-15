@@ -20,7 +20,7 @@ public class TreeAlgoPlus implements Algorithm{
     private double baseBearing;
 
     // Num of Markers between Start and End
-    private int numOfMidPoints = 8;
+    private int numOfMidPoints = 10;
     private double edgeDist = 0;
 
     private ArrayList<Route> finalRoutes = new ArrayList<>();
@@ -44,10 +44,6 @@ public class TreeAlgoPlus implements Algorithm{
 
         //if last section then link straight to end point
 
-//        System.out.println("Total Distance is: " + edgeDist);
-//        System.out.println("Splitting into : " + (numOfMidPoints) + " Sections");
-//        System.out.println("Total of : " + (numOfMidPoints + 1) + " Markers");
-
         MarkerNode completedTree = addChildren(START, numOfMidPoints, 0, edgeDist);
 
         printPaths(completedTree);
@@ -55,25 +51,6 @@ public class TreeAlgoPlus implements Algorithm{
         finalRoutes = NConverter.calcRouteTimes(finalRoutes);
 
         Route selected = finalRoutes.stream().min(Comparator.comparing(route -> route.getRouteTime())).get();
-
-//        System.out.println("Selected Time for Route: " + selected.getRouteTime() + " Minutes");
-
-        // Testing
-
-////        testPrintElevations();
-//        int counter = 0;
-//        boolean isMin = true;
-//        for (Route testRoute : finalRoutes) {
-//            if (testRoute.getRouteTime() == selected.getRouteTime()) {
-//                counter++;
-//            } else if (testRoute.getRouteTime() < selected.getRouteTime()) {
-//                isMin = false;
-//            }
-//        }
-
-//        System.out.println("Total number of routes: " + finalRoutes.size());
-//        System.out.println("Number of routes with same time: " + counter);
-//        System.out.println("Selected Route is the min time: " + isMin);
 
         return selected.getMarkers();
     }

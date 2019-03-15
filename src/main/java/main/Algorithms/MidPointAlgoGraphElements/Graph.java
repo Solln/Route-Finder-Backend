@@ -17,19 +17,6 @@ public class Graph {
         adjacent.add(node2);
     }
 
-    public void addTwoWayVertex(MarkerNode node1, MarkerNode node2) {
-        addEdge(node1, node2);
-        addEdge(node2, node1);
-    }
-
-    public boolean isConnected(MarkerNode node1, MarkerNode node2) {
-        Set adjacent = map.get(node1);
-        if(adjacent==null) {
-            return false;
-        }
-        return adjacent.contains(node2);
-    }
-
     public LinkedList<MarkerNode> adjacentNodes(MarkerNode last) {
         LinkedHashSet<MarkerNode> adjacent = map.get(last);
         if(adjacent==null) {
