@@ -22,7 +22,7 @@ public class DijkstraTest {
 
         grid = gridSetup(grid);
 
-        Dijkstra dij = new Dijkstra();
+        Dijkstra dij = new Dijkstra(3);
 
         grid = (ArrayList<MarkerNode>) dij.calculateShortestPathFromSource(grid, grid.get(0));
 

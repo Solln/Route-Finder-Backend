@@ -26,9 +26,7 @@ public class GraphStream {
         MappingHelper helper = new MappingHelper(coords);
         helper.extractMarkers(coords);
 
-        MeshAlgo algo = new MeshAlgo();
-
-        algo.setSlopeLimit(30);
+        MeshAlgo algo = new MeshAlgo(30, 3);
 
         algo.runAlgo(helper.markers);
 

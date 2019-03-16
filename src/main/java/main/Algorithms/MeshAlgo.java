@@ -26,8 +26,17 @@ public class MeshAlgo implements Algorithm{
 
     private double minDistance = 0;
     private double totalDistance = 0;
-    private double splitDist = 0.01;
+    private double splitDist = 0.02;
 
+    //Default Values
+    private int slopeLimit = 30;
+    private int fitness = 3;
+
+
+    public MeshAlgo(int slopeLimit, int fitness){
+        this.slopeLimit = slopeLimit;
+        this.fitness = fitness;
+    }
 
     public List<MarkerNode> runAlgo(ArrayList<MarkerNode> markers) {
 
@@ -283,7 +292,7 @@ public class MeshAlgo implements Algorithm{
 
     private ArrayList<MarkerNode> runDijkstras() {
 
-        Dijkstra dij = new Dijkstra();
+        Dijkstra dij = new Dijkstra(fitness);
 
         ArrayList<MarkerNode> dijMarkers = (ArrayList<MarkerNode>) dij.calculateShortestPathFromSource((ArrayList<MarkerNode>) markerBank, markerBank.get(markerBank.indexOf(START)));
 
@@ -368,26 +377,16 @@ public class MeshAlgo implements Algorithm{
         return list;
     }
 
-    private int slopeLimit = 30;
-
     private boolean checkGradient(MarkerNode start, MarkerNode end) {
 
         double eleChange = end.getElevation() - start.getElevation();
 
         if (eleChange > 0) {
             double slope = Math.toDegrees(Math.atan(eleChange / 90));
-            if (slope > slopeLimit) {
-                return false;
-            } else {
-                return true;
-            }
+            return !(slope > slopeLimit);
         } else if (eleChange < 0) {
             double slope = Math.toDegrees(Math.atan(eleChange / 90));
-            if (slope < -slopeLimit) {
-                return false;
-            } else {
-                return true;
-            }
+            return !(slope < -slopeLimit);
         } else {
             return true;
         }
@@ -406,7 +405,4 @@ public class MeshAlgo implements Algorithm{
         return Double.parseDouble(df.format(value));
     }
 
-    public int getSlopeLimit() {
-        return slopeLimit;
-    }
 }

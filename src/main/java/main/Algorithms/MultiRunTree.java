@@ -7,9 +7,20 @@ import java.util.List;
 
 public class MultiRunTree implements Algorithm{
 
+    //Default Values
+    private int slopeLimit = 30;
+    private int fitness = 3;
+
+
+    public MultiRunTree(int slopeLimit, int fitness){
+        this.slopeLimit = slopeLimit;
+        this.fitness = fitness;
+    }
+
+
     public List<MarkerNode> runAlgo(ArrayList<MarkerNode> markers) {
 
-        TreeAlgoPlus algo1 = new TreeAlgoPlus();
+        TreeAlgoPlus algo1 = new TreeAlgoPlus(slopeLimit, fitness);
 
         List<MarkerNode> newMarkers = algo1.runAlgo(markers);
 
@@ -38,7 +49,7 @@ public class MultiRunTree implements Algorithm{
         List<List<MarkerNode>> testList = new ArrayList<>();
 
         for (List<MarkerNode> set : markerSets) {
-            List<MarkerNode> splitMarkers = new TreeAlgoPlus().runAlgo((ArrayList<MarkerNode>) set);
+            List<MarkerNode> splitMarkers = new TreeAlgoPlus(slopeLimit, fitness).runAlgo((ArrayList<MarkerNode>) set);
 
             testList.add(splitMarkers);
 

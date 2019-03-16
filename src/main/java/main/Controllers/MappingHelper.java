@@ -14,7 +14,7 @@ public class MappingHelper {
 
     private String coords;
     public ArrayList<MarkerNode> markers = new ArrayList<>();
-    private NaismithConverter nConv = new NaismithConverter();
+    private NaismithConverter nConv;
 
     private double defaultDist = 999;
 
@@ -46,33 +46,38 @@ public class MappingHelper {
             sets.add(set);
         }
 
+        nConv = new NaismithConverter(Integer.parseInt(settings[2]));
+
+        int slope = Integer.parseInt(settings[0]);
+        int fitness = Integer.parseInt(settings[2]);
+
         // Select Algorithm
         switch (settings[1]) {
             case "1":
                 System.out.println("Running Midpoint");
-                return runMidpointAlgo(sets);
+                return runMidpointAlgo(sets, slope, fitness);
             case "2":
                 System.out.println("Running Tree");
-                return runTreeAlgo(sets);
+                return runTreeAlgo(sets, slope, fitness);
             case "3":
                 System.out.println("Running Tree Plus");
-                return runTreePlusAlgo(sets);
+                return runTreePlusAlgo(sets, slope, fitness);
             case "4":
                 System.out.println("Running Multi");
-                return runMultiRunTree(sets);
+                return runMultiRunTree(sets, slope, fitness);
             case "5":
                 System.out.println("Running Mesh");
-                return runMeshAlgo(sets, Integer.parseInt(settings[0]));
+                return runMeshAlgo(sets, slope, fitness);
             case "6":
                 System.out.println("Running All");
-                return runAllAlgos(sets);
+                return runAllAlgos(sets, slope, fitness);
         }
 
         System.out.println("Deferring to Default...");
-        return runMeshAlgo(sets, Integer.parseInt(settings[0]));
+        return runMeshAlgo(sets, Integer.parseInt(settings[0]), Integer.parseInt(settings[2]));
     }
 
-    private String runMeshAlgo(ArrayList<ArrayList<MarkerNode>> sets, int slopeLimit) {
+    private String runMeshAlgo(ArrayList<ArrayList<MarkerNode>> sets, int slopeLimit, int fitness) {
         //Run Algorithm 5
 
         ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
@@ -93,7 +98,7 @@ public class MappingHelper {
 
                 System.out.println("Slope size: " + slopeLimit);
 
-                MeshAlgo algo = new MeshAlgo();
+                MeshAlgo algo = new MeshAlgo(slopeLimit, fitness);
                 algo.setSlopeLimit(slopeLimit);
                 newMarkers = algo.runAlgo(set);
                 actDistance = algo.getTotalDistance();
@@ -114,19 +119,17 @@ public class MappingHelper {
             newSets.add((ArrayList<MarkerNode>) newMarkers);
         }
 
-        String test = maxSlope + "/" + (int)actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(newSets.get(newSets.size() - 1))) + ";" + convertToMarkerString(newSets.get(newSets.size() - 1));
-
-        return test;
+        return maxSlope + "/" + (int) actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(newSets.get(newSets.size() - 1))) + ";" + convertToMarkerString(newSets.get(newSets.size() - 1));
     }
 
-    private String runMidpointAlgo(ArrayList<ArrayList<MarkerNode>> sets) {
+    private String runMidpointAlgo(ArrayList<ArrayList<MarkerNode>> sets, int slopeLimit, int fitness) {
         ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
         double actDistance = 0;
 
         for (ArrayList<MarkerNode> set : sets) {
 
             //Run Algorithm 1
-            Algorithm algo = new MidPointAlgo();
+            Algorithm algo = new MidPointAlgo(slopeLimit, fitness);
             List<MarkerNode> newMarkers = algo.runAlgo(set);
             actDistance = algo.getTotalDistance();
 
@@ -134,19 +137,17 @@ public class MappingHelper {
 
         }
 
-        String test = 0 + "/" + actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(combineSets(newSets))) + ";" + convertToMarkerString(combineSets(newSets));
-
-        return test;
+        return 0 + "/" + actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(combineSets(newSets))) + ";" + convertToMarkerString(combineSets(newSets));
     }
 
-    private String runTreeAlgo(ArrayList<ArrayList<MarkerNode>> sets) {
+    private String runTreeAlgo(ArrayList<ArrayList<MarkerNode>> sets, int slopeLimit, int fitness) {
         ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
         double actDistance = 0;
 
         for (ArrayList<MarkerNode> set : sets) {
 
             //Run Algorithm 1
-            Algorithm algo = new TreeAlgo();
+            Algorithm algo = new TreeAlgo(slopeLimit, fitness);
             List<MarkerNode> newMarkers = algo.runAlgo(set);
             actDistance = algo.getTotalDistance();
 
@@ -154,19 +155,17 @@ public class MappingHelper {
 
         }
 
-        String test = 0 + "/" + actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(combineSets(newSets))) + ";" + convertToMarkerString(combineSets(newSets));
-
-        return test;
+        return 0 + "/" + actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(combineSets(newSets))) + ";" + convertToMarkerString(combineSets(newSets));
     }
 
-    private String runTreePlusAlgo(ArrayList<ArrayList<MarkerNode>> sets) {
+    private String runTreePlusAlgo(ArrayList<ArrayList<MarkerNode>> sets, int slopeLimit, int fitness) {
         ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
         double actDistance = 0;
 
         for (ArrayList<MarkerNode> set : sets) {
 
             //Run Algorithm 1
-            Algorithm algo = new TreeAlgoPlus();
+            Algorithm algo = new TreeAlgoPlus(slopeLimit, fitness);
             List<MarkerNode> newMarkers = algo.runAlgo(set);
             actDistance = algo.getTotalDistance();
 
@@ -174,18 +173,19 @@ public class MappingHelper {
 
         }
 
-        String test = 0 + "/" + actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(combineSets(newSets))) + ";" + convertToMarkerString(combineSets(newSets));
+        return 0 + "/" + actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(combineSets(newSets))) + ";" + convertToMarkerString(combineSets(newSets));
 
-        return test;    }
 
-    private String runMultiRunTree(ArrayList<ArrayList<MarkerNode>> sets) {
+    }
+
+    private String runMultiRunTree(ArrayList<ArrayList<MarkerNode>> sets, int slopeLimit, int fitness) {
         ArrayList<ArrayList<MarkerNode>> newSets = new ArrayList<>();
         double actDistance = 0;
 
         for (ArrayList<MarkerNode> set : sets) {
 
             //Run Algorithm 1
-            Algorithm algo = new MultiRunTree();
+            Algorithm algo = new MultiRunTree(slopeLimit, fitness);
             List<MarkerNode> newMarkers = algo.runAlgo(set);
             actDistance = algo.getTotalDistance();
 
@@ -193,16 +193,15 @@ public class MappingHelper {
 
         }
 
-        String test = 0 + "/" + actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(combineSets(newSets))) + ";"  + convertToMarkerString(combineSets(newSets));
+        return 0 + "/" + actDistance + "/" + fourDecimal(nConv.calcSingleRouteTime(combineSets(newSets))) + ";" + convertToMarkerString(combineSets(newSets));
+    }
 
-        return test;    }
-
-    private String runAllAlgos(ArrayList<ArrayList<MarkerNode>> sets){
-        String mesh = runMeshAlgo(sets, 40);
-        String mid = runMidpointAlgo(sets);
-        String tree = runTreeAlgo(sets);
-        String treeP = runTreePlusAlgo(sets);
-        String multi = runMultiRunTree(sets);
+    private String runAllAlgos(ArrayList<ArrayList<MarkerNode>> sets, int slopeLimit, int fitness) {
+        String mesh = runMeshAlgo(sets, slopeLimit, fitness);
+        String mid = runMidpointAlgo(sets, slopeLimit, fitness);
+        String tree = runTreeAlgo(sets, slopeLimit, fitness);
+        String treeP = runTreePlusAlgo(sets, slopeLimit, fitness);
+        String multi = runMultiRunTree(sets, slopeLimit, fitness);
 
         return mesh + "+" + mid + "+" + tree + "+" + treeP + "+" + multi;
     }
@@ -259,7 +258,7 @@ public class MappingHelper {
         }
     }
 
-    private double fourDecimal(double value){
+    private double fourDecimal(double value) {
         df.setRoundingMode(RoundingMode.CEILING);
         return Double.parseDouble(df.format(value));
     }

@@ -27,7 +27,7 @@ public class AlgorithmTest {
 
     @Test
     public void meshRunAlgo() {
-        MeshAlgo algo = new MeshAlgo();
+        MeshAlgo algo = new MeshAlgo(30, 3);
         ArrayList<MarkerNode> returnedList = runAlgo(algo);
 
         // Check for reasonable resolution
@@ -37,7 +37,7 @@ public class AlgorithmTest {
 
     @Test
     public void midPointRunAlgo() {
-        MidPointAlgo algo = new MidPointAlgo();
+        MidPointAlgo algo = new MidPointAlgo(30, 3);
         ArrayList<MarkerNode> returnedList = runAlgo(algo);
 
         // Check for reasonable resolution
@@ -47,7 +47,7 @@ public class AlgorithmTest {
 
     @Test
     public void multiRunAlgo() {
-        MultiRunTree algo = new MultiRunTree();
+        MultiRunTree algo = new MultiRunTree(30, 3);
         ArrayList<MarkerNode> returnedList = runAlgo(algo);
 
         // Check for reasonable resolution
@@ -57,7 +57,7 @@ public class AlgorithmTest {
 
     @Test
     public void treeRunAlgo() {
-        TreeAlgo algo = new TreeAlgo();
+        TreeAlgo algo = new TreeAlgo(30, 3);
         ArrayList<MarkerNode> returnedList = runAlgo(algo);
 
         // Check for reasonable resolution
@@ -67,7 +67,7 @@ public class AlgorithmTest {
 
     @Test
     public void treePlusRunAlgo() {
-        TreeAlgoPlus algo = new TreeAlgoPlus();
+        TreeAlgoPlus algo = new TreeAlgoPlus(30, 3);
         ArrayList<MarkerNode> returnedList = runAlgo(algo);
 
         // Check for reasonable resolution

@@ -25,7 +25,18 @@ public class TreeAlgoPlus implements Algorithm{
 
     private ArrayList<Route> finalRoutes = new ArrayList<>();
 
-    private NaismithConverter NConverter = new NaismithConverter();
+    private NaismithConverter NConverter;
+
+    //Default Values
+    private int slopeLimit = 30;
+    private int fitness = 3;
+
+    public TreeAlgoPlus(int slopeLimit, int fitness){
+        this.slopeLimit = slopeLimit;
+        this.fitness = fitness;
+        NConverter = new NaismithConverter(fitness);
+    }
+
 
     public List<MarkerNode> runAlgo(ArrayList<MarkerNode> markers) {
 

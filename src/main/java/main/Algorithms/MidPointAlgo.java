@@ -19,6 +19,16 @@ public class MidPointAlgo implements Algorithm{
 
     // EVERY X.XX(X)X IS 130M
 
+    //Default Values
+    private int slopeLimit = 30;
+    private int fitness = 3;
+
+
+    public MidPointAlgo(int slopeLimit, int fitness){
+        this.slopeLimit = slopeLimit;
+        this.fitness = fitness;
+    }
+
 
     public List<MarkerNode> runAlgo(ArrayList<MarkerNode> markers) {
         this.markers = markers;

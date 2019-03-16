@@ -6,8 +6,12 @@ import java.util.*;
 
 public class Dijkstra {
 
-    private NaismithConverter nai = new NaismithConverter();
+    private NaismithConverter nai;
     private ConverterWorkshop converter = new ConverterWorkshop();
+
+    public Dijkstra(int fitness){
+        nai = new NaismithConverter(fitness);
+    }
 
     public List<MarkerNode> calculateShortestPathFromSource(ArrayList<MarkerNode> graph, MarkerNode source) {
 
